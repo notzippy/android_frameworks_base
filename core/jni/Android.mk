@@ -11,10 +11,6 @@ else
 	LOCAL_CFLAGS += -DPACKED=""
 endif
 
-ifeq ($(WITH_JIT),true)
-	LOCAL_CFLAGS += -DWITH_JIT
-endif
-
 ifneq ($(USE_CUSTOM_RUNTIME_HEAP_MAX),)
   LOCAL_CFLAGS += -DCUSTOM_RUNTIME_HEAP_MAX=$(USE_CUSTOM_RUNTIME_HEAP_MAX)
 endif
@@ -206,6 +202,7 @@ LOCAL_SHARED_LIBRARIES := \
 	libETC1 \
 	libhardware \
 	libhardware_legacy \
+	libselinux \
 	libsonivox \
 	libcrypto \
 	libssl \
@@ -219,11 +216,6 @@ LOCAL_SHARED_LIBRARIES := \
 	libharfbuzz \
 	libz
 
-ifeq ($(HAVE_SELINUX),true)
-LOCAL_C_INCLUDES += external/libselinux/include
-LOCAL_SHARED_LIBRARIES += libselinux
-LOCAL_CFLAGS += -DHAVE_SELINUX
-endif # HAVE_SELINUX
 
 ifeq ($(TARGET_ARCH), arm)
   ifeq ($(TARGET_USE_KRAIT_BIONIC_OPTIMIZATION), true)
@@ -244,7 +236,6 @@ else
     LOCAL_SRC_FILES+= \
 		android/graphics/Bitmap.cpp
 endif
-
 ifeq ($(USE_OPENGL_RENDERER),true)
 	LOCAL_SHARED_LIBRARIES += libhwui
 endif

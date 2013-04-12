@@ -2539,12 +2539,16 @@ public class Activity extends ContextThemeWrapper
      * Activity don't need to deal with feature codes.
      */
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        CharSequence titleCondensed = item.getTitleCondensed();
+
         switch (featureId) {
             case Window.FEATURE_OPTIONS_PANEL:
                 // Put event logging here so it gets called even if subclass
                 // doesn't call through to superclass's implmeentation of each
                 // of these methods below
-                EventLog.writeEvent(50000, 0, item.getTitleCondensed());
+                if(titleCondensed != null) {
+                    EventLog.writeEvent(50000, 0, titleCondensed.toString());
+                }
                 if (onOptionsItemSelected(item)) {
                     return true;
                 }
@@ -2562,7 +2566,9 @@ public class Activity extends ContextThemeWrapper
                 return false;
                 
             case Window.FEATURE_CONTEXT_MENU:
-                EventLog.writeEvent(50000, 1, item.getTitleCondensed());
+                if(titleCondensed != null) {
+                    EventLog.writeEvent(50000, 1, titleCondensed.toString());
+                }
                 if (onContextItemSelected(item)) {
                     return true;
                 }
@@ -4818,8 +4824,8 @@ public class Activity extends ContextThemeWrapper
      * <code>android:immersive</code> but may be changed at runtime by
      * {@link #setImmersive}.
      *
+     * @see #setImmersive(boolean)
      * @see android.content.pm.ActivityInfo#FLAG_IMMERSIVE
-     * @hide
      */
     public boolean isImmersive() {
         try {
@@ -4831,7 +4837,7 @@ public class Activity extends ContextThemeWrapper
 
     /**
      * Adjust the current immersive mode setting.
-     * 
+     *
      * Note that changing this value will have no effect on the activity's
      * {@link android.content.pm.ActivityInfo} structure; that is, if
      * <code>android:immersive</code> is set to <code>true</code>
@@ -4840,9 +4846,8 @@ public class Activity extends ContextThemeWrapper
      * always have its {@link android.content.pm.ActivityInfo#FLAG_IMMERSIVE
      * FLAG_IMMERSIVE} bit set.
      *
-     * @see #isImmersive
+     * @see #isImmersive()
      * @see android.content.pm.ActivityInfo#FLAG_IMMERSIVE
-     * @hide
      */
     public void setImmersive(boolean i) {
         try {

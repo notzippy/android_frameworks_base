@@ -1179,8 +1179,11 @@ public class ConnectivityService extends IConnectivityManager.Stub {
                         log("startUsingNetworkFeature reconnecting to " + networkType + ": " +
                                 feature);
                     }
-                    network.reconnect();
-                    return PhoneConstants.APN_REQUEST_STARTED;
+                    if (network.reconnect()) {
+                        return PhoneConstants.APN_REQUEST_STARTED;
+                    } else {
+                        return PhoneConstants.APN_REQUEST_FAILED;
+                    }
                 } else {
                     // need to remember this unsupported request so we respond appropriately on stop
                     synchronized(this) {
@@ -3377,7 +3380,7 @@ public class ConnectivityService extends IConnectivityManager.Stub {
         // Tear down existing lockdown if profile was removed
         mLockdownEnabled = LockdownVpnTracker.isEnabled();
         if (mLockdownEnabled) {
-            if (mKeyStore.state() != KeyStore.State.UNLOCKED) {
+            if (!mKeyStore.isUnlocked()) {
                 Slog.w(TAG, "KeyStore locked; unable to create LockdownTracker");
                 return false;
             }

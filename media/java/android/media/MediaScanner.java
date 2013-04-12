@@ -283,7 +283,7 @@ public class MediaScanner
         "Terror",
         "Indie",
         "Britpop",
-        "Negerpunk",
+        null,
         "Polsk Punk",
         "Beat",
         "Christian Gangsta",
@@ -441,6 +441,7 @@ public class MediaScanner
             mMimeType = mimeType;
             mFileType = 0;
             mFileSize = fileSize;
+            mIsDrm = false;
 
             if (!isDirectory) {
                 if (!noMedia && isNoMediaFile(path)) {
@@ -503,7 +504,6 @@ public class MediaScanner
             mLastModified = lastModified;
             mWriter = null;
             mCompilation = 0;
-            mIsDrm = false;
             mWidth = 0;
             mHeight = 0;
 
@@ -700,7 +700,7 @@ public class MediaScanner
                     try {
                         short genreIndex = Short.parseShort(number.toString());
                         if (genreIndex >= 0) {
-                            if (genreIndex < ID3_GENRES.length) {
+                            if (genreIndex < ID3_GENRES.length && ID3_GENRES[genreIndex] != null) {
                                 return ID3_GENRES[genreIndex];
                             } else if (genreIndex == 0xFF) {
                                 return null;
@@ -1039,6 +1039,7 @@ public class MediaScanner
             }
 
             if (mDrmManagerClient.canHandle(path, null)) {
+                mIsDrm = true;
                 String drmMimetype = mDrmManagerClient.getOriginalMimeType(path);
                 if (drmMimetype != null) {
                     mMimeType = drmMimetype;
